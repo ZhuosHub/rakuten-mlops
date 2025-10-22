@@ -1,0 +1,23 @@
+name: release
+on:
+  push:
+    tags: ["v*.*.*"]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build API/Trainer image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/rakuten-mlops:${{ github.ref_name }} .
+      - name: Push
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/rakuten-mlops:${{ github.ref_name }}

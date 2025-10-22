@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+  api:
+    build: .
+    image: rakuten-mlops:latest
+    container_name: rakuten_api
+    ports:
+      - "8000:8000"
+    environment:
+      # Auth
+      - API_USER=${API_USER:-admin}
+      - API_PASS=${API_PASS:-changeme}
+      # Model/MLflow/DB
+      - MLFLOW_URI=file:/workspace/mlruns
+      - MODEL_URI=models:/rakuten_clf/1   
+      - DB_PATH=/workspace/data/processed/rakuten.db
+      - EXPERIMENT=rakuten_text_baseline
+      - REGISTER_NAME=rakuten_clf
+    volumes:
+      - ./data:/workspace/data
+      - ./mlruns:/workspace/mlruns
+    command: ["python","-m","uvicorn","src.api.app:app","--host","0.0.0.0","--port","8000","--workers","2"]
+
+  trainer:
+    build: .
+    image: rakuten-mlops:latest
+    container_name: rakuten_trainer
+    depends_on:
+      - api
+    environment:
+      - MLFLOW_URI=file:/workspace/mlruns
+      - DB_PATH=/workspace/data/processed/rakuten.db
+      - EXPERIMENT=rakuten_text_baseline
+      - REGISTER_NAME=rakuten_clf
+    volumes:
+      - ./data:/workspace/data
+      - ./mlruns:/workspace/mlruns
+
+    command: ["python","src/models/train_model.py","--db","/workspace/data/processed/rakuten.db","--mlflow-uri","file:/workspace/mlruns"]
