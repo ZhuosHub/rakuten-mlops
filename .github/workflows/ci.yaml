@@ -19,7 +19,9 @@ jobs:
       - name: Lint
         run: flake8
       - name: Tests
-        run: pytest -q
+        run: |
+          export PYTHONPATH=.
+          pytest -q
       - name: Docker build (api/trainer)
         run: |
           docker build -t rakuten-mlops:ci .
