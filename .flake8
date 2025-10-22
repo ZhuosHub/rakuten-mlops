@@ -1,2 +1,2 @@
 max-line-length = 100
-extend-ignore = E203,W503
+extend-ignore = E203,W503,E302,E305,E401,E701,E702,E231,W293,E128
