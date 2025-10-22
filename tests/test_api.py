@@ -1,6 +1,7 @@
-import os
 from fastapi.testclient import TestClient
 from src.api.app import app
+from src.api import app as app_module  # <-- import the module to patch its symbol
+import os
 
 def test_healthz():
     client = TestClient(app)
@@ -12,12 +13,14 @@ def test_predict_auth_and_payload(monkeypatch):
     os.environ["API_USER"] = "u"
     os.environ["API_PASS"] = "p"
 
-    # mock prediction to avoid loading real model
-    from src.models import predict_model
-    monkeypatch.setattr(predict_model, "predict_one", lambda a,b: 999)
+    # Patch the module-level name actually used by the endpoint
+    monkeypatch.setattr(app_module, "predict_one", lambda designation, description=None: 999)
 
     client = TestClient(app)
-    r = client.post("/predict", json={"designation":"abc","description":"def"},
-                    auth=("u","p"))
+    r = client.post(
+        "/predict",
+        json={"designation": "abc", "description": "def"},
+        auth=("u", "p"),
+    )
     assert r.status_code == 200
     assert r.json() == {"prdtypecode": 999}
