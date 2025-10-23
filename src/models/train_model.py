@@ -141,7 +141,12 @@ def main():
     if promote and v_this is not None:
         client.set_model_version_tag(args.register, int(v_this), "is_best", "true")
         client.set_model_version_tag(args.register, int(v_this), "macro_f1", f"{macro_f1:.4f}")
-
+        # to Production stage
+        client.set_registered_model_alias(
+            name=args.register,
+            alias="Production",
+            version=int(v_this),
+        )
     print(f"[model_selection] v_this={v_this}, prev_version={prev_version}, "
         f"this_macro={macro_f1:.4f}, prev_macro={macro_prev}, promote={promote}")
       

@@ -1,39 +1,44 @@
-version: "3.9"
 services:
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --default-artifact-root /mlruns
+      --serve-artifacts
+      --allowed-hosts=*
+    environment:
+      - MLFLOW_UI_TIMEOUT=600
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlruns
+      - mlflowdb:/mlflow
+
   api:
     build: .
     image: rakuten-mlops:latest
     container_name: rakuten_api
-    ports:
-      - "8000:8000"
+    ports: ["8000:8000"]
     environment:
-      # Auth
       - API_USER=${API_USER:-admin}
       - API_PASS=${API_PASS:-changeme}
-      # Model/MLflow/DB
-      - MLFLOW_URI=file:/workspace/mlruns
-      - MODEL_URI=models:/rakuten_clf/1   
+      - MLFLOW_URI=http://mlflow:5000
       - DB_PATH=/workspace/data/processed/rakuten.db
       - EXPERIMENT=rakuten_text_baseline
       - REGISTER_NAME=rakuten_clf
+    depends_on: [mlflow]
     volumes:
       - ./data:/workspace/data
       - ./mlruns:/workspace/mlruns
-    command: ["python","-m","uvicorn","src.api.app:app","--host","0.0.0.0","--port","8000","--workers","2"]
 
-  trainer:
-    build: .
-    image: rakuten-mlops:latest
-    container_name: rakuten_trainer
-    depends_on:
-      - api
+  streamlit:
+    build: ./streamlit
     environment:
-      - MLFLOW_URI=file:/workspace/mlruns
-      - DB_PATH=/workspace/data/processed/rakuten.db
-      - EXPERIMENT=rakuten_text_baseline
-      - REGISTER_NAME=rakuten_clf
-    volumes:
-      - ./data:/workspace/data
-      - ./mlruns:/workspace/mlruns
+      - API_URL=http://api:8000
+    depends_on: [api]
+    ports: ["8501:8501"]
 
-    command: ["python","src/models/train_model.py","--db","/workspace/data/processed/rakuten.db","--mlflow-uri","file:/workspace/mlruns"]
+volumes:
+  mlflowdb: {}

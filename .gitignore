@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *.ipynb_checkpoints/
+.pytest_cache/
+**/.pytest_cache/
 
 # C extensions
 *.so
@@ -53,7 +55,8 @@ coverage.xml
 
 # Django stuff:
 *.log
-
+# Models (local artifacts if any)
+models/
 # MLflow local store
 mlruns/
 
@@ -89,12 +92,18 @@ data/interim/
 data/processed/*.db
 !data/processed/.gitkeep
 
-# Mac OS-specific storage files
+# Misc
+.env
 .DS_Store
+*.swp
+EOF
 
 # vim
 *.swp
 *.swo
 
 # Mypy cache
-.mypy_cache/
+.mypy_cache/mlruns/
+**/.pytest_cache/
+data/raw/images/
+

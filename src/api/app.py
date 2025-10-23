@@ -5,6 +5,7 @@ from typing import List, Optional
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 import secrets
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import Depends
 
 from src.models.predict_model import predict_one, predict_batch
 
@@ -35,20 +36,19 @@ def healthz():
     return {"ok": True}
 
 @app.post("/predict")
-def predict(inp: PredictIn):
+def predict(inp: PredictIn, _: bool = Depends(require_auth)):
     code = predict_one(inp.designation, inp.description)
     return {"prdtypecode": code}
 
 @app.post("/predict_batch")
-def predict_many(inp: PredictBatchIn):
+def predict_many(inp: PredictBatchIn, _: bool = Depends(require_auth)):
     preds = predict_batch([i.dict() for i in inp.items])
     return {"prdtypecodes": preds}
 
 @app.post("/training")
-def training():
+def training(_: bool = Depends(require_auth)):
     """
-    Synchronous training trigger. In Step 1 we keep it simple.
-    Reads env for DB/MLflow settings.
+    Synchronous training trigger. Simple.
     """
     db = os.getenv("DB_PATH", "data/processed/rakuten.db")
     mlflow_uri = os.getenv("MLFLOW_URI", "file:./mlruns")

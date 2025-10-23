@@ -7,7 +7,7 @@ import mlflow.sklearn
 # 1) MLflow model registry version/stage: e.g. MODEL_URI="models:/rakuten_clf/Production"
 # 2) Local artifact path: e.g. MODEL_URI="file:./mlruns/<exp_id>/<run_id>/artifacts/model"
 
-MODEL_URI = os.getenv("MODEL_URI", "models:/rakuten_clf/Production")
+MODEL_URI = os.getenv("MODEL_URI", "models:/rakuten_clf@Production")
 MLFLOW_URI = os.getenv("MLFLOW_URI", "file:./mlruns")
 
 @lru_cache(maxsize=1)

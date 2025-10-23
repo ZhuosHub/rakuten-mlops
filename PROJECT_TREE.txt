@@ -1,0 +1,90 @@
+.
+├── .env
+├── .flake8
+├── .github
+│   └── workflows
+│       ├── .pytest_cache
+│       ├── ci.yaml
+│       └── release.yaml
+├── .gitignore
+├── .pytest_cache
+│   ├── .gitignore
+│   ├── CACHEDIR.TAG
+│   ├── README.md
+│   └── v
+│       └── cache
+├── Dockerfile
+├── PROJECT_TREE.txt
+├── data
+│   ├── interim
+│   │   ├── X_test.csv
+│   │   ├── X_train.csv
+│   │   └── Y_train.csv
+│   ├── processed
+│   │   ├── .gitkeep
+│   │   └── rakuten.db
+│   └── raw
+│       ├── X_test.csv
+│       ├── X_train.csv
+│       ├── Y_train.csv
+│       └── images
+├── docker-compose.yml
+├── mlruns
+│   ├── .trash
+│   ├── 0
+│   │   └── meta.yaml
+│   ├── 127978266708256285
+│   │   ├── 05f4ff34e7824fd59c5a54721c08dbb0
+│   │   ├── 086293e00f8e4e1bab0c3b9e8844eb81
+│   │   ├── 1140752c224f4e1a9e227073161bb181
+│   │   ├── 17317d69b01f4024af8780c22fbadbd3
+│   │   ├── 22ccc1cbe60c4baa902bf4bd519a389a
+│   │   ├── 258d6b220a084784b772c18a75c469e1
+│   │   ├── 31413ed218534e40a71ecff31013c618
+│   │   ├── 3537540d50e84566ade5633be4aa6fc3
+│   │   ├── 396cbb1b588d4fdcb86debd7da2f1615
+│   │   ├── 3f984e8e558049b2a542d38c0cea4911
+│   │   ├── 4dd7360ace9c44dfaeb8c8539bd4cc2c
+│   │   ├── 607bd9b96fac4a7f977e52b725fbfcf4
+│   │   ├── 608c4ce7c154432e8eb4655c0ff336ce
+│   │   ├── 65fadac0df714bc7b8a1e252511a9b9e
+│   │   ├── 6e78dd2c512849b4ab1f931c359bd3be
+│   │   ├── 8542afc3f9d2489c9df3c2756b6970ca
+│   │   ├── 95a8aeb2e14e4ff488e27b4dd5638f8c
+│   │   ├── 9d5cf5a004684c54979f43e22c71d4c3
+│   │   ├── a28da94e3ec248ae9daddb2f4b03bf0c
+│   │   ├── abadd8c0f5584ba2a73bab17507d1730
+│   │   ├── afe0f60e0ef5446b88bf2a4f74e50049
+│   │   ├── b2c06e698b7244fb95e1b7d5ab53f302
+│   │   ├── b5014cd029434620b51f075bf56c702f
+│   │   ├── c101ff084fde438da6366b8ea38a1338
+│   │   ├── c636984605eb4297b04633af270c7fe5
+│   │   ├── ca4a8d8c72d247fbad85d1b5d6cd678f
+│   │   ├── ccb50296fa28428e85ecbc6e4a3b51af
+│   │   ├── d273367911454aa79115aaee6d2c69d1
+│   │   ├── d7d4026ca5f84f3981efabbdfaa7b16f
+│   │   ├── e46768e4126740cd91de25d7c4b2f7b3
+│   │   ├── f8ddc75cebad4c6f90e4d2e2114fb775
+│   │   ├── meta.yaml
+│   │   └── models
+│   └── models
+│       └── rakuten_clf
+├── pytest.ini
+├── reports
+│   └── figures
+│       └── val_report.txt
+├── requirements.txt
+├── src
+│   ├── api
+│   │   └── app.py
+│   ├── data
+│   │   ├── fix_csv.py
+│   │   ├── make_dataset.py
+│   │   └── schema.sql
+│   └── models
+│       ├── predict_model.py
+│       └── train_model.py
+└── tests
+    └── test_api.py
+
+56 directories, 31 files

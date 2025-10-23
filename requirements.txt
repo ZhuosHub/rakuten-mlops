@@ -11,3 +11,5 @@ flake8
 sqlalchemy
 matplotlib
 pyyaml
+requests==2.32.5
+streamlit==1.50.0
