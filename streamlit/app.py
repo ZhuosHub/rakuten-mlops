@@ -12,7 +12,7 @@ API_USER = os.getenv("API_USER", "admin")
 API_PASS = os.getenv("API_PASS", "changeme")
 
 GH_OWNER = os.getenv("GH_OWNER", "")
-GH_REPO  = os.getenv("GH_REPO",  "")
+GH_REPO = os.getenv("GH_REPO",  "")
 GH_TOKEN = os.getenv("GH_TOKEN")  # optional; for last-run API
 
 MLFLOW_URL = os.getenv("MLFLOW_URL", "http://localhost:5000")
@@ -63,7 +63,7 @@ with st.sidebar:
 if page == "Overview":
     st.title("Rakuten Product Classification — End-to-End MLOps")
     st.markdown("""
-**Goal**: Build a reproducible pipeline from training → versioning → deployment → demo.  
+**Goal**: Build a reproducible pipeline from training → versioning → deployment → demo.
 **Scope**:
 - FastAPI: `/training`, `/predict`, `/healthz`
 - MLflow: Tracking + Model Registry (Production alias)
@@ -84,17 +84,17 @@ if page == "Overview":
     with col2:
         st.subheader("What you will see")
         st.markdown("""
-- New versions appearing in MLflow  
-- (If better) auto-promotion to **Production**  
+- New versions appearing in MLflow
+- (If better) auto-promotion to **Production**
 - Live prediction from the UI
         """)
 
 elif page == "Pipeline":
     st.header("System Pipeline (High-Level)")
     st.markdown("""
-1. **Cron** → calls FastAPI **`/training`**  
-2. **Training script** → logs to **MLflow**, registers version, compares metrics, updates **Production** alias  
-3. **FastAPI `/predict`** → loads **Production** (or file fallback) and returns predictions  
+1. **Cron** → calls FastAPI **`/training`**
+2. **Training script** → logs to **MLflow**, registers version, compares metrics, updates **Production** alias
+3. **FastAPI `/predict`** → loads **Production** (or file fallback) and returns predictions
 4. **Streamlit** → interactive UI calling `/predict`
     """)
     st.markdown("---")
@@ -220,9 +220,9 @@ elif page == "MLflow & Ops":
 elif page == "Summary":
     st.header("What’s Done")
     st.markdown("""
-- End-to-end pipeline: training → registry → deployment → demo  
-- Automated retraining via cron (5-min for demo)  
-- MLflow Model Registry with **Production** alias  
+- End-to-end pipeline: training → registry → deployment → demo
+- Automated retraining via cron (5-min for demo)
+- MLflow Model Registry with **Production** alias
 - FastAPI inference + Streamlit front-end
     """)
     st.success("Ready for defense. Questions welcome.")

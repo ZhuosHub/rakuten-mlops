@@ -149,6 +149,6 @@ def main():
         )
     print(f"[model_selection] v_this={v_this}, prev_version={prev_version}, "
         f"this_macro={macro_f1:.4f}, prev_macro={macro_prev}, promote={promote}")
-      
+
 if __name__ == "__main__":
     main()
