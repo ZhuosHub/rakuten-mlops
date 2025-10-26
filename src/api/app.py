@@ -5,7 +5,6 @@ from typing import List, Optional
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 import secrets
 from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi import Depends
 
 from src.models.predict_model import predict_one, predict_batch
 

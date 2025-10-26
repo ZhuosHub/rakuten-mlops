@@ -89,7 +89,6 @@ target/
 data/
 data/raw/
 data/interim/
-data/processed/*.db
 !data/processed/.gitkeep
 
 # Misc

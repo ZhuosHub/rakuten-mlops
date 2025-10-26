@@ -24,7 +24,9 @@ services:
     environment:
       - API_USER=${API_USER:-admin}
       - API_PASS=${API_PASS:-changeme}
-      - MLFLOW_URI=http://mlflow:5000
+      - MLFLOW_URI=http://mlflow:5000 #for training
+      - MLFLOW_URL=http://localhost:5000  #for external link
+      - MODEL_PATH=/workspace/models/model.joblib
       - DB_PATH=/workspace/data/processed/rakuten.db
       - EXPERIMENT=rakuten_text_baseline
       - REGISTER_NAME=rakuten_clf
@@ -32,13 +34,23 @@ services:
     volumes:
       - ./data:/workspace/data
       - ./mlruns:/workspace/mlruns
+      - ./models:/workspace/models
+      - ./mlruns:/mlruns 
 
   streamlit:
     build: ./streamlit
     environment:
       - API_URL=http://api:8000
+      - API_USER=${API_USER:-admin}
+      - API_PASS=${API_PASS:-changeme}
+      - MLFLOW_URI=http://mlflow:5000
+      - MLFLOW_URL=http://localhost:5000      
+      - GH_OWNER=ZhuosHub
+      - GH_REPO=rakuten-mlops
+
     depends_on: [api]
     ports: ["8501:8501"]
 
+ 
 volumes:
   mlflowdb: {}
