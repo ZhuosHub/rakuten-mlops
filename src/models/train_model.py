@@ -4,6 +4,7 @@ import sqlite3
 import mlflow
 import mlflow.sklearn
 import pandas as pd
+import time, numpy as np, random
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC
@@ -38,7 +39,7 @@ def main():
     ap.add_argument("--experiment", default="rakuten_text_baseline")
     ap.add_argument("--register", default="rakuten_clf")
     ap.add_argument("--test-size", type=float, default=0.1)
-    ap.add_argument("--random-state", type=int, default=42)
+    ap.add_argument("--random-state", type=int, default=None)
     args = ap.parse_args()
 
     mlflow.set_tracking_uri(args.mlflow_uri)
@@ -59,6 +60,9 @@ def main():
     use_stratified = len(df_kept) > 0 and df_kept["prdtypecode"].value_counts().min() >= 2
     df_split = df_kept if use_stratified else df
 
+    # choose a per-run seed if user didn't set one
+    seed = args.random_state if args.random_state is not None else int(time.time() * 1000) % 1_000_000_000
+
     with mlflow.start_run() as run:
         mlflow.log_metrics({
             "n_rows_total": len(df),
@@ -68,6 +72,8 @@ def main():
             "n_classes_after_drop": int(n_classes_kept),
         })
         mlflow.log_param("stratified_split", bool(use_stratified))
+        mlflow.log_param("random_state", int(seed))
+
 
         if use_stratified:
             stratify_y = df_split["prdtypecode"]
@@ -78,9 +84,10 @@ def main():
             df_split["text"],
             df_split["prdtypecode"],
             test_size=args.test_size,
-            random_state=args.random_state,
+            random_state=seed,
             stratify=stratify_y
         )
+
 
         pipe = build_pipeline()
         pipe.fit(X_train, y_train)

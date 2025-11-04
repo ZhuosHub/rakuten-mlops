@@ -6,6 +6,8 @@ import requests
 from requests.auth import HTTPBasicAuth
 import streamlit as st
 
+IMG_PATH = os.path.join(os.path.dirname(__file__), "workflow-mermaid.png")
+RAKUTEN_IMG = os.path.join(os.path.dirname(__file__), "rakuten.png")
 # --------- Config from env ---------
 API = os.getenv("API_URL", "http://localhost:8000")
 API_USER = os.getenv("API_USER", "admin")
@@ -43,7 +45,8 @@ st.sidebar.title("MLOps Presentation")
 page = st.sidebar.radio(
     "Navigate",
     [
-        "Overview",
+        "Goals and Objectives",
+        "Project Status",
         "Pipeline",
         "Live Training",
         "Live Prediction",
@@ -60,43 +63,136 @@ with st.sidebar:
     st.markdown("**API health:** " + ("OK" if ping_api() else "DOWN"))
 
 # --------- Pages -------------------
-if page == "Overview":
-    st.title("Rakuten Product Classification — End-to-End MLOps")
+if page == "Goals and Objectives":
+    st.title("Goals and Objectives of the Project")
+
+    # --- 1) Background  ---
+    st.markdown("## 1. Background: Rakuten Product Classification")
+    col_left, col_right = st.columns([1.4, 1.0])
+    with col_left:
+        st.markdown(
+            """
+- **Task**: Large-scale taxonomy classification for e-commerce  
+- **Input**: product **title** + **description**  
+- **Output**: **prdtypecode** (category in Rakuten taxonomy)  
+- **Scale**: ~99k examples, 1000+ classes (train/test split)  
+- **Why it matters**:  
+  - improves **search relevance**  
+  - enhances **recommendations**  
+  - enforces **catalog consistency**  
+  - reduces **manual labeling** at scale  
+            """
+        )
+    with col_right:
+        st.image(RAKUTEN_IMG, caption="Rakuten Product Classification", use_container_width=True)
+
+    st.markdown("---")
+
+    # --- 2) ---
+    st.markdown(
+        """
+## 2. Purpose of *this* project
+
+Although the dataset comes from a real industrial challenge,  
+the primary aim of this work is **not** to build a state-of-the-art classifier.  
+Instead, the goal is to design a **complete, reproducible MLOps workflow** around it.
+
+This project focuses on building:
+
+- a transparent model lifecycle  
+- automated retraining mechanisms  
+- versioning and governance  
+- deployable inference services  
+- a clear demonstration interface
+
+In other words, the classification task serves as the **application domain**,  
+while the central learning outcome is the **construction of a stable MLOps pipeline**.
+
+---
+
+## 3. Core Objectives of the Project
+
+### ✅ Objective 1 — Build a reproducible training workflow  
+- deterministic or controlled randomness options  
+- consistent data loading  
+- logged metrics, parameters, and artifacts (MLflow)
+
+### ✅ Objective 2 — Model versioning and governance  
+- automatic comparison of new vs previous versions  
+- promotion of the best version to the Production alias  
+- transparent experiment history
+
+### ✅ Objective 3 — Deploy an inference API  
+- FastAPI endpoint for `/predict` and `/training`  
+- includes Basic Authentication  
+- uses the Production model from the registry
+
+### ✅ Objective 4 — Automated retraining  
+- cron-based scheduling inside the API container  
+- fully automated logging and version updates  
+- periodic evaluation and registry updates
+
+### ✅ Objective 5 — Unified presentation interface  
+- Streamlit as the central demo and narrative interface  
+- exploration of versions, predictions, and workflow overview
+
+---
+
+## Summary
+
+The project combines a real e-commerce classification problem  
+with the construction of an end-to-end MLOps workflow.  
+The focus is to demonstrate reproducibility, governance,  
+automation, and deployment — the core skills of modern machine learning operations.
+        """
+    )
+
+
+
+elif page == "Project Status":
+    st.title("Current Status of the Project")
+
     st.markdown("""
-**Goal**: Build a reproducible pipeline from training → versioning → deployment → demo.
-**Scope**:
-- FastAPI: `/training`, `/predict`, `/healthz`
-- MLflow: Tracking + Model Registry (Production alias)
-- Cron: Automated retraining (every 5 min for demo)
-- Streamlit: This presentation + live demo
-- Docker Compose: Orchestration (mlflow / api / streamlit)
+The pipeline is **fully functional** and demonstrates the complete machine learning lifecycle.
+
+### ✅ Current Capabilities
+- **Automated hourly retraining (cron job)**  
+  Every run is logged, evaluated, and versioned.
+- **MLflow Tracking & Model Registry integration**  
+  Metrics, parameters, artifacts, and model versions recorded in real time.
+- **Automated model selection**  
+  New model is compared with previous one; if better, it becomes the **Production** version.
+- **FastAPI deployed inference service**  
+  Protected with Bas      ic Auth and serving `/predict` and `/training` endpoints.
+- **Streamlit demo application**  
+  This interface shows the pipeline structure, training logs, model versions, and live predictions.
+
+### ✅ The system now supports
+- reproducible science  
+- transparent model comparison  
+- consistent deployment behaviour  
+- real end-to-end demonstration
+
+This page summarizes *what is already working* and what can be demonstrated live.
     """)
 
-    col1, col2 = st.columns([1,1])
-    with col1:
-        st.subheader("Key Features")
-        st.markdown("""
-- Manual & automated training
-- MLflow versioning + Production alias
-- Deployed inference via FastAPI
-- Streamlit interactive demo
-        """)
-    with col2:
-        st.subheader("What you will see")
-        st.markdown("""
-- New versions appearing in MLflow
-- (If better) auto-promotion to **Production**
-- Live prediction from the UI
-        """)
 
 elif page == "Pipeline":
-    st.header("System Pipeline (High-Level)")
-    st.markdown("""
-1. **Cron** → calls FastAPI **`/training`**
-2. **Training script** → logs to **MLflow**, registers version, compares metrics, updates **Production** alias
-3. **FastAPI `/predict`** → loads **Production** (or file fallback) and returns predictions
-4. **Streamlit** → interactive UI calling `/predict`
-    """)
+    st.header("End-to-End Workflow Diagram")
+    col_img, col_txt = st.columns([1.6, 1.2])  
+    with col_img:
+        st.image(IMG_PATH, use_container_width=True, caption="MLOps Pipeline Overview")
+
+    with col_txt:
+        st.markdown("""
+        ### Workflow Summary
+        - **SQLite Database** → stores product texts and labels used for training.
+        - **FastAPI Service** → exposes `/training` and `/predict` endpoints (with Basic Auth).
+        - **Training Script** → logs metrics and models to **MLflow** and registers new versions.
+        - **MLflow Model Registry** → promotes the best model to the **Production alias**.
+        - **Cron Job** → automatically triggers retraining inside the API container.
+        - **Streamlit App** → interacts with the API for both training and prediction demo.
+        """)      
     st.markdown("---")
     st.subheader("Quick Health Checks")
     col1, col2, col3 = st.columns(3)
@@ -115,6 +211,9 @@ elif page == "Pipeline":
     with col3:
         st.write("Cron (server-side)")
         st.caption("Logs live under `/var/log/cron.log` inside API container.")
+
+
+
 
 elif page == "Live Training":
     st.header("Trigger Training (via FastAPI `/training`)")
@@ -220,9 +319,40 @@ elif page == "MLflow & Ops":
 elif page == "Summary":
     st.header("What’s Done")
     st.markdown("""
-- End-to-end pipeline: training → registry → deployment → demo
-- Automated retraining via cron (5-min for demo)
-- MLflow Model Registry with **Production** alias
+- End-to-end pipeline: training → registry → deployment → demo  
+- Automated retraining via cron (5-min for demo)  
+- MLflow Model Registry with **Production** alias  
 - FastAPI inference + Streamlit front-end
     """)
+
+
+    st.markdown("---")
+    st.header("Next Steps and Possible Improvements")
+
+    st.markdown("""
+### 1. Expand the API layer
+- Add endpoints for **model metrics**, **version info**, and **health monitoring**
+- Integrate endpoints for **batch predictions** or **data upload**  
+  (to support real-time feedback or human-in-the-loop retraining)
+
+### 2. Replace cron with **Airflow orchestration**
+- Use Airflow DAGs for retraining, validation, and deployment workflows  
+- Enable **dependency tracking**, **scheduling**, and **error recovery**
+- Store logs and metrics directly in a **central Airflow UI**
+
+### 3. Enhance model evaluation
+- Add **drift detection** and **alerting** (e.g., Prometheus + Grafana)
+- Introduce **minimum performance thresholds** for model promotion
+- Automate rollback to previous Production version if performance drops
+
+### 4. Improve scalability and reliability
+- Deploy API using **Kubernetes** for auto-scaling and load balancing
+- Use **message queues** (RabbitMQ / Kafka) for asynchronous prediction
+- Store data in **PostgreSQL** instead of SQLite for concurrent access
+
+### 5. Extend the demo and frontend
+- Add **data visualization** of model performance trends  
+- Integrate **interactive error analysis** and **prediction explanations (SHAP)**
+    """)
+    st.markdown("---")
     st.success("Ready for defense. Questions welcome.")
