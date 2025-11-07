@@ -59,16 +59,16 @@ flowchart TD
 ---
 ## 3. Components Overview
 
-### • SQLite Database**  
+### • SQLite Database  
 Stores all product texts and their corresponding labels used for model training.  
 It provides a lightweight and reproducible local data source for the entire workflow.
 
-### • FastAPI**  
+### • FastAPI  
 Hosts the main endpoints `/training`, `/predict`, and `/predict_batch`, all secured via Basic Authentication.  
 It acts as the central hub connecting data access, training, and inference.
 
 
-### • Training Script (`train_model.py`)**  
+### • Training Script (train_model.py)  
 Implements a text classification model using TF-IDF + LinearSVC.  
 It logs parameters, metrics, and artifacts to MLflow and registers each trained model version automatically.
 
@@ -76,15 +76,15 @@ It logs parameters, metrics, and artifacts to MLflow and registers each trained 
 Manages all experiment logs, metrics, and model artifacts.  
 The Registry assigns aliases such as `Production` or `Staging`, ensuring transparent model governance.
 
-### • Cron Job (inside API container)**  
+### • Cron Job (inside API container)  
 Automates retraining by periodically triggering the `/training` endpoint.  
 Each run is automatically logged and evaluated to decide if the new model should replace the current Production version.
 
-### • Streamlit App**  
+### • Streamlit App  
 Provides an interactive and visual interface for both presentation and live demonstration.  
 Users can trigger retraining, make predictions, and explore model versions and workflow structure.
 
-### • CI/CD with GitHub Actions**  
+### • CI/CD with GitHub Actions  
 Ensures continuous integration and deployment through automated workflows (`ci.yaml` and `release.yaml`).  
 Includes linting, testing, Docker image building, and optional publishing to DockerHub.
 
