@@ -72,7 +72,7 @@ It acts as the central hub connecting data access, training, and inference.
 Implements a text classification model using TF-IDF + LinearSVC.  
 It logs parameters, metrics, and artifacts to MLflow and registers each trained model version automatically.
 
-### • MLflow Tracking & Registry**  
+### • MLflow Tracking & Registry  
 Manages all experiment logs, metrics, and model artifacts.  
 The Registry assigns aliases such as `Production` or `Staging`, ensuring transparent model governance.
 
